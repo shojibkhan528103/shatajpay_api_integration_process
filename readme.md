@@ -40,8 +40,8 @@ POST /api/v1/user/payment-system
 {
     "amount": 1000,
     "currency": "BDT",
-    "name": "John Doe",
-    "email": "john@example.com",
+    "name": "Customer Name",
+    "email": "customer@example.com",
     "mobile": "01700000000",
     "Address": "Dhaka, Bangladesh",
     "opt_value_a": "",
@@ -196,8 +196,8 @@ The local transaction record should contain the following information:
 
 ```json
 {
-    "name": "John Doe",
-    "email": "john@example.com",
+    "name": "Customer Name",
+    "email": "customer@example.com",
     "phone": "01700000000",
     "method": "shatajPay",
     "amount": 1000,
