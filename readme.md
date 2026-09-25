@@ -1,5 +1,9 @@
 # ShatajPay Payment Gateway API Documentation
 
+Before using the ShatajPay Payment Gateway API, register your merchant account and obtain the required payment gateway credentials.
+
+Registration: [https://pay.shataj.com/register](https://pay.shataj.com/register?utm_source=chatgpt.com)
+
 ## Payment Initialization API
 
 ### Api Base URL
