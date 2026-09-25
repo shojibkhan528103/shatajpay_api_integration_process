@@ -2,6 +2,11 @@
 
 ## Payment Initialization API
 
+### Api Base URL
+
+```text
+$apiUrl = 'http://pay.shataj.com/api/v1/user/payment-system';
+```
 ### Endpoint
 
 ```text
