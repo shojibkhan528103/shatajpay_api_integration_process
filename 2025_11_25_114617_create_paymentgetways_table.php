@@ -8,7 +8,7 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     * this is for dynamic crediential store and use for shataj payment gateway.
+     * this is for dynamic crediential store and use for shataj payment gateway.you can also keep all crediential on env and config , then you can use also directly without dynamic storing.
      */
     public function up(): void
     {

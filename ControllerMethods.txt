@@ -2,7 +2,7 @@
     public function submit()
     {
 
-        # necessery validation here then
+        # necessery validation here then apply payment gateway 
 
         $this->totalAmount = 10;
 

@@ -27,7 +27,7 @@ class GatewayController extends Controller
 
             if ($status === 'Complete') {
                 if ($transaction->status === 'completed') {
-                    // after success TODO whatever your need 
+                    // Already success?? then TODO whatever your need 
                 }
 
                 if ($transaction->status !== 'pending') {
@@ -56,7 +56,7 @@ class GatewayController extends Controller
                 }
 
                 if ($transaction->status === 'failed') {
-                // after success TODO whatever your need 
+                // after failed/cancel TODO whatever your need 
                 }
 
                 return redirect() #that you want;
