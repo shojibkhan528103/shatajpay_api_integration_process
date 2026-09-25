@@ -1,4 +1,4 @@
-# ShatajPay Payment Gateway API
+# ShatajPay Payment Gateway API Documentation
 
 ## Payment Initialization API
 
