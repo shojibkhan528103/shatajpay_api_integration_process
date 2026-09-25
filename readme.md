@@ -5,7 +5,7 @@
 ### Api Base URL
 
 ```text
-$apiUrl = 'http://pay.shataj.com';
+$apiUrl = 'http://pay.shataj.com'   
 ```
 ### Endpoint
 
