@@ -1,83 +1,8 @@
-<?php
-
-namespace App\Livewire\Frontend;
-
-use App\Models\SeminarParticipant;
-use App\Models\Transaction;
-use App\Models\paymentgetway;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
-use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
-use Livewire\Component;
-use phpDocumentor\Reflection\Types\This;
-
-#[Layout('layouts.app')]
-#[Title('Shataj Seminar Registration')]
-class Index extends Component
-{
-    public $name = '';
-    public $mobile = '';
-    public $email = '';
-    public $paymentMethod = 'shatajPay';
-    public $totalAmount = 10;
-
-    public array $seminar = [
-        'title' => 'সেমিনার রেজিস্ট্রেশন',
-        'name' => 'Shataj Seminar',
-        'fee' => 1000,
-        'currency' => 'BDT',
-        'location' => 'Dhaka, Bangladesh',
-        'date' => '',
-        'time' => '',
-        'description' => 'সেমিনারে অংশগ্রহণের জন্য নিচের তথ্য পূরণ করে রেজিস্ট্রেশন সম্পন্ন করুন।',
-    ];
-
-    protected function rules()
-    {
-        return [
-            'name' => ['required', 'string', 'min:3', 'max:100'],
-            'mobile' => ['required', 'regex:/^01[3-9]\d{8}$/'],
-            'email' => ['nullable', 'email', 'max:150'],
-            'paymentMethod' => ['required', 'in:shatajPay,bKash'],
-        ];
-    }
-
-    protected function messages()
-    {
-        return [
-            'name.required' => 'আপনার নাম দিন।',
-            'name.min' => 'নাম কমপক্ষে ৩ অক্ষরের হতে হবে।',
-            'mobile.required' => 'মোবাইল নম্বর দিন।',
-            'mobile.regex' => 'সঠিক ১১ সংখ্যার বাংলাদেশি মোবাইল নম্বর দিন।',
-            'email.email' => 'সঠিক ই-মেইল ঠিকানা দিন।',
-            'paymentMethod.in' => 'সঠিক পেমেন্ট পদ্ধতি নির্বাচন করুন।',
-        ];
-    }
-
-    public function updated($property)
-    {
-        $this->validateOnly($property);
-    }
-
-    public function selectPayment($method)
-    {
-        $this->paymentMethod = $method;
-        $this->resetValidation('paymentMethod');
-    }
 
     public function submit()
     {
-        $this->validate();
 
-        if ($this->participantExists()) {
-            $this->addError(
-                'mobile',
-                'এই মোবাইল নম্বর দিয়ে ইতোমধ্যে সেমিনারে রেজিস্ট্রেশন সম্পন্ন হয়েছে।'
-            );
-
-            return;
-        }
+        # necessery validation here then
 
         $this->totalAmount = 10;
 
@@ -91,43 +16,9 @@ class Index extends Component
             $this->paymentGatewaySubmit($user, $this->seminar);
             return;
         }
-
-        if ($this->paymentMethod === 'bKash') {
-            $transaction = $this->createTransaction($user);
-
-            if ($transaction) {
-                $this->bkashPayment($transaction->id);
-            }
-        }
     }
 
-    private function participantExists()
-    {
-        return SeminarParticipant::where('mobile', $this->mobile)->exists();
-    }
-
-    private function createTransaction($user)
-    {
-        try {
-            return Transaction::create([
-                'name' => $user->name,
-                'email' => $user->email,
-                'phone' => $user->mobileNumber,
-                'method' => $this->paymentMethod,
-                'amount' => 10,
-                'status' => 'pending',
-                'transaction_id' => (string) Str::uuid(),
-                'order_id' => (string) Str::uuid(),
-                'currency' => 'BDT',
-                'event_name' => $this->seminar['name'],
-                'event_data' => $this->seminar,
-            ]);
-        } catch (\Throwable $e) {
-            session()->flash('error', 'Payment creation failed.');
-            return null;
-        }
-    }
-
+    // here transaction is optional but must store the transaction and order id for next callback url and after payment success or fail or cancel update transaction or necessery data that customer need
     private function paymentGatewaySubmit($user, $event)
     {
         $gateway_crediential = $this->getOption('shatajPay');
@@ -162,9 +53,8 @@ class Index extends Component
             }
 
             $this->createPayment($orderPayment, $user);
-            $this->clearField();
+            $this->clearField(); # whatever user want with his form
         } catch (\Throwable $th) {
-            report($th);
             session()->flash('error', 'Payment creation failed.');
         }
     }
@@ -239,44 +129,8 @@ class Index extends Component
                 return;
             }
 
-            session()->flash(
-                'error',
-                $response->json('message') ?? 'Payment gateway rejected the request.'
-            );
+            session()->flash('error', $response->json('message') ?? 'Payment gateway rejected the request.');
         } catch (\Throwable $e) {
-            report($e);
             session()->flash('error', 'An error occurred while processing payment.');
         }
     }
-
-    private function bkashPayment($orderId)
-    {
-        try {
-            $this->redirect(route('payment.process', [
-                'method' => 'Bkash',
-                'payment_id' => $orderId,
-            ]));
-        } catch (\Throwable $th) {
-            session()->flash('error', 'Unable to start bKash payment.');
-        }
-    }
-
-    private function clearField()
-    {
-        $this->reset([
-            'name',
-            'mobile',
-            'email',
-        ]);
-
-        $this->paymentMethod = 'shatajPay';
-    }
-
-    public function get_demo(){
-        $this->redirectRoute('get.demo');
-    }
-    public function render()
-    {
-        return view('livewire.frontend.index');
-    }
-}

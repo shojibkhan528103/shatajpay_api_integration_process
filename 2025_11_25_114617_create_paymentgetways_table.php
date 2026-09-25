@@ -8,6 +8,7 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     * this is for dynamic crediential store and use for shataj payment gateway.
      */
     public function up(): void
     {

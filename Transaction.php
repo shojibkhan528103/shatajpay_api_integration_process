@@ -11,15 +11,13 @@ class Transaction extends Model
         'name',
         'email',
         'phone',
+        'address',
         'method',
         'amount',
         'currency',
         'status',
         'transaction_id',
         'order_id',
-        'event_name',
-        'event_data',
-        'address',
     ];
 
     protected $casts = [
